@@ -24,6 +24,21 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
+    public List<Product> getProducts() {
+        String sql = """
+                SELECT * FROM product;
+                """;
+
+        Map<String, Object> map = new HashMap<>(); // <key, value>
+
+        List<Product> productList =  namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
+        return productList;
+
+        /** 3435也可以寫 */
+        // return namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
+    }
+
+    @Override
     public Product getProductById(Integer productId) {
         /* 如果選擇 NamedParameterJdbcTemplate，則使用 :productId 來進行參數傳遞；如果選擇傳統 SQL 問題，則使用 ?。 */
         String sql = """
