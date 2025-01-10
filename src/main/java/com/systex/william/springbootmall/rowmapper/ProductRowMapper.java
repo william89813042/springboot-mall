@@ -14,10 +14,8 @@ public class ProductRowMapper implements RowMapper<Product> {
     public Product mapRow(ResultSet rs, int i) throws SQLException {
         Product product = new Product();
 
-
         product.setProductId(rs.getInt("product_id"));
         product.setProductName(rs.getString("product_name"));
-
 
         /** 將 category 的字串轉換為 ProductCategory 類型 */
         String categoryStr = rs.getString("category");
