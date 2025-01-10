@@ -17,6 +17,9 @@ public class ProductController {
         this.productService = productService;
     }
 
+    /**
+     * 根據商品的 id 去取得商品的數據
+     */
     @GetMapping("/products/{productId}")
     public ResponseEntity<Product> getProduct(@PathVariable Integer productId) {
         /*
@@ -32,6 +35,9 @@ public class ProductController {
         }
     }
 
+    /**
+     * 新增 product 的數據
+     */
     @PostMapping("/products")
     public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest) {
         Integer productId = productService.createProduct(productRequest);
@@ -42,6 +48,9 @@ public class ProductController {
 
     }
 
+    /**
+     * 修改 product 的數據
+     */
     @PutMapping("/products/{productId}")
     public ResponseEntity<Product> updateProduct(@PathVariable Integer productId,
                                                  @RequestBody @Valid ProductRequest productRequest) {
@@ -58,5 +67,16 @@ public class ProductController {
         Product updatedProduct = productService.getProductById(productId);
 
         return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
+    }
+
+    /**
+     * 刪除 product 的數據
+     */
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId) {
+        productService.deleteProductById(productId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
     }
 }
