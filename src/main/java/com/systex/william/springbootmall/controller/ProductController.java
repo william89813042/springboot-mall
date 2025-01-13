@@ -6,12 +6,16 @@ import com.systex.william.springbootmall.dto.ProductRequest;
 import com.systex.william.springbootmall.model.Product;
 import com.systex.william.springbootmall.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 public class ProductController {
 
@@ -31,13 +35,18 @@ public class ProductController {
             @RequestParam (required = false) String search,
             /* 排序 Sorting */
             @RequestParam (defaultValue = "created_date") String orderBy, /* 要去根據甚麼欄位來做排序 ， 預設是 created_date */
-            @RequestParam (defaultValue = "desc") String sort /* 是要做升冪還是降冪的排序 ， 預設是 desc */
+            @RequestParam (defaultValue = "desc") String sort, /* 是要做升冪還是降冪的排序 ， 預設是 desc */
+            /* 分頁 Pagination */
+            @RequestParam (defaultValue = "5") @Max(1000) @Min(0) Integer limit,
+            @RequestParam (defaultValue = "0") @Min(0) Integer offset
     ) {
         ProductQueryParams productQueryParams = new ProductQueryParams();
         productQueryParams.setCategory(category);
         productQueryParams.setSearch(search);
         productQueryParams.setOrderBy(orderBy);
         productQueryParams.setSort(sort);
+        productQueryParams.setLimit(limit);
+        productQueryParams.setOffset(offset);
 
         List<Product> productList = productService.getProducts(productQueryParams);
         /** 把這個商品的數據放在 response body 裡面回傳給前端 */
