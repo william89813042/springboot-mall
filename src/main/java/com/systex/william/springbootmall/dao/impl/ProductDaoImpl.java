@@ -167,6 +167,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     /* 這個方法是用來將查詢條件加入到 SQL 中的 */
+    /* 軟體的價值在於重複使用 */
     private String addFilteringSql(String sql, Map<String, Object> map, ProductQueryParams productQueryParams) {
         // 查詢條件
         if (productQueryParams.getCategory() != null) {
