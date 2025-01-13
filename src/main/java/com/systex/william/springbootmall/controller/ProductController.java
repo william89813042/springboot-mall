@@ -5,6 +5,7 @@ import com.systex.william.springbootmall.dto.ProductQueryParams;
 import com.systex.william.springbootmall.dto.ProductRequest;
 import com.systex.william.springbootmall.model.Product;
 import com.systex.william.springbootmall.service.ProductService;
+import com.systex.william.springbootmall.util.Page;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -29,7 +30,7 @@ public class ProductController {
      * 取得所有商品的數據
      */
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(
+    public ResponseEntity<Page<Product>> getProducts(
             /* 查詢條件 Filtering */
             @RequestParam (required = false) ProductCategory category, /* (required = false)這個參數是可選的，如果前端沒有傳這個參數的話，那就會是 null */
             @RequestParam (required = false) String search,
@@ -48,9 +49,20 @@ public class ProductController {
         productQueryParams.setLimit(limit);
         productQueryParams.setOffset(offset);
 
+        // 取得 product list
         List<Product> productList = productService.getProducts(productQueryParams);
+
+        // 取得 product 總數
+        Integer total = productService.countProduct(productQueryParams);
+
+        // 分頁
+        Page<Product> page = new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(total);
+        page.setResults(productList);
         /** 把這個商品的數據放在 response body 裡面回傳給前端 */
-        return ResponseEntity.status(HttpStatus.OK).body(productList);
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     /**
