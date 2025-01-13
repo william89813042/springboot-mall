@@ -1,5 +1,6 @@
 package com.systex.william.springbootmall.controller;
 
+import com.systex.william.springbootmall.constant.ProductCategory;
 import com.systex.william.springbootmall.dto.ProductRequest;
 import com.systex.william.springbootmall.model.Product;
 import com.systex.william.springbootmall.service.ProductService;
@@ -23,9 +24,11 @@ public class ProductController {
      * 取得所有商品的數據
      */
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts() {
-        List<Product> productList = productService.getProducts();
-
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam(required = false) ProductCategory category, /* (required = false)這個參數是可選的，如果前端沒有傳這個參數的話，那就會是 null */
+            @RequestParam(required = false) String search
+            ) {
+        List<Product> productList = productService.getProducts(category , search);
         /** 把這個商品的數據放在 response body 裡面回傳給前端 */
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }

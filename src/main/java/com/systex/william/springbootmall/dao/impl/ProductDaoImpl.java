@@ -1,5 +1,6 @@
 package com.systex.william.springbootmall.dao.impl;
 
+import com.systex.william.springbootmall.constant.ProductCategory;
 import com.systex.william.springbootmall.dao.ProductDao;
 import com.systex.william.springbootmall.dto.ProductRequest;
 import com.systex.william.springbootmall.model.Product;
@@ -24,17 +25,28 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> getProducts() {
+    public List<Product> getProducts(ProductCategory category, String search) {
         String sql = """
-                SELECT * FROM product;
+                SELECT * FROM product
+                WHERE 1=1
                 """;
 
         Map<String, Object> map = new HashMap<>(); // <key, value>
 
+        if (category != null) {
+            sql += " AND category = :category";
+            map.put("category", category.name());
+        }
+
+        if(search != null) {
+            sql += " AND product_name LIKE :search";
+            map.put("search", "%" + search + "%");
+        }
+
         List<Product> productList =  namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
         return productList;
 
-        /** 3435也可以寫 */
+        /* 3435也可以寫 */
         // return namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
     }
 
