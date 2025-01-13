@@ -1,7 +1,7 @@
 package com.systex.william.springbootmall.dao.impl;
 
-import com.systex.william.springbootmall.constant.ProductCategory;
 import com.systex.william.springbootmall.dao.ProductDao;
+import com.systex.william.springbootmall.dto.ProductQueryParms;
 import com.systex.william.springbootmall.dto.ProductRequest;
 import com.systex.william.springbootmall.model.Product;
 import com.systex.william.springbootmall.rowmapper.ProductRowMapper;
@@ -25,22 +25,22 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> getProducts(ProductCategory category, String search) {
+    public List<Product> getProducts(ProductQueryParms productQueryParms) {
         String sql = """
                 SELECT * FROM product
-                WHERE 1=1
+                WHERE 1=1  /* 這裡的 1=1 是為了讓後面的 AND 條件可以直接接在 WHERE 後面，而不用判斷是否有條件 */
                 """;
 
         Map<String, Object> map = new HashMap<>(); // <key, value>
 
-        if (category != null) {
-            sql += " AND category = :category";
-            map.put("category", category.name());
+        if (productQueryParms.getCategory() != null) {
+            sql += " AND category = :category";   //原本是sql = sql + " AND category = :category";
+            map.put("category", productQueryParms.getCategory().name());
         }
 
-        if(search != null) {
+        if(productQueryParms.getSearch() != null) {
             sql += " AND product_name LIKE :search";
-            map.put("search", "%" + search + "%");
+            map.put("search", "%" + productQueryParms.getSearch() + "%");  // % 是 SQL 的萬用字元，表示任意字元
         }
 
         List<Product> productList =  namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());

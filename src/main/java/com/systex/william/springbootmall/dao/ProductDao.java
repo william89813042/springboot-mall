@@ -1,6 +1,7 @@
 package com.systex.william.springbootmall.dao;
 
 import com.systex.william.springbootmall.constant.ProductCategory;
+import com.systex.william.springbootmall.dto.ProductQueryParms;
 import com.systex.william.springbootmall.dto.ProductRequest;
 import com.systex.william.springbootmall.model.Product;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 public interface ProductDao {
 
-    List<Product> getProducts(ProductCategory category, String search);
+    List<Product> getProducts(ProductQueryParms productQueryParms);
 
     Product getProductById(Integer productId);
 

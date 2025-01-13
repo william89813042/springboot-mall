@@ -1,7 +1,7 @@
 package com.systex.william.springbootmall.service.impl;
 
-import com.systex.william.springbootmall.constant.ProductCategory;
 import com.systex.william.springbootmall.dao.ProductDao;
+import com.systex.william.springbootmall.dto.ProductQueryParms;
 import com.systex.william.springbootmall.dto.ProductRequest;
 import com.systex.william.springbootmall.model.Product;
 import com.systex.william.springbootmall.service.ProductService;
@@ -18,8 +18,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProducts(ProductCategory category, String search) {
-        return productDao.getProducts(category , search);
+    public List<Product> getProducts(ProductQueryParms productQueryParms) {
+        return productDao.getProducts(productQueryParms);
     }
 
     @Override
