@@ -27,23 +27,15 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Integer countProduct(ProductQueryParams productQueryParams) {
-        String sql  = """
+        String sql = """
                 SELECT COUNT(*) FROM product
                 WHERE 1=1
                 """;
 
-        Map <String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
 
         // 查詢條件
-        if (productQueryParams.getCategory() != null) {
-            sql += " AND category = :category";   // 原本是 sql = sql + " AND category = :category";
-            map.put("category", productQueryParams.getCategory().name());
-        }
-
-        if(productQueryParams.getSearch() != null) {
-            sql += " AND product_name LIKE :search";
-            map.put("search", "%" + productQueryParams.getSearch() + "%");  // % 是 SQL 的萬用字元，表示任意字元
-        }
+        sql = addFilteringSql(sql, map, productQueryParams);
 
         Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class); // 在最後一個參數這裡就要去填上 Integer.class那表示說我們要將 count 的值去轉換成是一個 Integer 類型的返回值
 
@@ -60,15 +52,7 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map = new HashMap<>(); // <key, value>
 
         // 查詢條件
-        if (productQueryParams.getCategory() != null) {
-            sql += " AND category = :category";   //原本是sql = sql + " AND category = :category";
-            map.put("category", productQueryParams.getCategory().name());
-        }
-
-        if(productQueryParams.getSearch() != null) {
-            sql += " AND product_name LIKE :search";
-            map.put("search", "%" + productQueryParams.getSearch() + "%");  // % 是 SQL 的萬用字元，表示任意字元
-        }
+        sql = addFilteringSql(sql, map, productQueryParams);
 
         // 排序
         sql += " ORDER BY " + productQueryParams.getOrderBy() + " " + productQueryParams.getSort();
@@ -78,7 +62,7 @@ public class ProductDaoImpl implements ProductDao {
         map.put("limit", productQueryParams.getLimit());
         map.put("offset", productQueryParams.getOffset());
 
-        List<Product> productList =  namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
+        List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
         return productList;
 
         /* 3435也可以寫 */
@@ -180,5 +164,21 @@ public class ProductDaoImpl implements ProductDao {
         map.put("productId", productId);
 
         namedParameterJdbcTemplate.update(sql, map);
+    }
+
+    /* 這個方法是用來將查詢條件加入到 SQL 中的 */
+    private String addFilteringSql(String sql, Map<String, Object> map, ProductQueryParams productQueryParams) {
+        // 查詢條件
+        if (productQueryParams.getCategory() != null) {
+            sql += " AND category = :category";   // 原本是 sql = sql + " AND category = :category";
+            map.put("category", productQueryParams.getCategory().name());
+        }
+
+        if (productQueryParams.getSearch() != null) {
+            sql += " AND product_name LIKE :search";
+            map.put("search", "%" + productQueryParams.getSearch() + "%");  // % 是 SQL 的萬用字元，表示任意字元
+        }
+
+        return sql;
     }
 }
