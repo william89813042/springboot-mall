@@ -2,11 +2,16 @@ package com.systex.william.springbootmall.dto;
 
 import com.systex.william.springbootmall.constant.ProductCategory;
 
-public class ProductQueryParms {
+public class ProductQueryParams {
 
     private ProductCategory category;
 
     private String search;
+
+    private String orderBy;
+
+    private String sort;
+
 
     public String getSearch() {
         return search;
@@ -22,5 +27,21 @@ public class ProductQueryParms {
 
     public void setCategory(ProductCategory category) {
         this.category = category;
+    }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
     }
 }

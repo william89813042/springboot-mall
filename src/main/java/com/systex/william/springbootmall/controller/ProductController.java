@@ -1,7 +1,7 @@
 package com.systex.william.springbootmall.controller;
 
 import com.systex.william.springbootmall.constant.ProductCategory;
-import com.systex.william.springbootmall.dto.ProductQueryParms;
+import com.systex.william.springbootmall.dto.ProductQueryParams;
 import com.systex.william.springbootmall.dto.ProductRequest;
 import com.systex.william.springbootmall.model.Product;
 import com.systex.william.springbootmall.service.ProductService;
@@ -26,14 +26,20 @@ public class ProductController {
      */
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts(
-            @RequestParam(required = false) ProductCategory category, /* (required = false)這個參數是可選的，如果前端沒有傳這個參數的話，那就會是 null */
-            @RequestParam(required = false) String search
+            /* 查詢條件 Filtering */
+            @RequestParam (required = false) ProductCategory category, /* (required = false)這個參數是可選的，如果前端沒有傳這個參數的話，那就會是 null */
+            @RequestParam (required = false) String search,
+            /* 排序 Sorting */
+            @RequestParam (defaultValue = "created_date") String orderBy, /* 要去根據甚麼欄位來做排序 ， 預設是 created_date */
+            @RequestParam (defaultValue = "desc") String sort /* 是要做升冪還是降冪的排序 ， 預設是 desc */
     ) {
-        ProductQueryParms productQueryParms = new ProductQueryParms();
-        productQueryParms.setCategory(category);
-        productQueryParms.setSearch(search);
+        ProductQueryParams productQueryParams = new ProductQueryParams();
+        productQueryParams.setCategory(category);
+        productQueryParams.setSearch(search);
+        productQueryParams.setOrderBy(orderBy);
+        productQueryParams.setSort(sort);
 
-        List<Product> productList = productService.getProducts(productQueryParms);
+        List<Product> productList = productService.getProducts(productQueryParams);
         /** 把這個商品的數據放在 response body 裡面回傳給前端 */
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
