@@ -30,7 +30,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getUserById(Integer userId) {
         String sql = """
-            SELECT * FROM user
+            SELECT * FROM `user`
             WHERE user_id = :userId
             """;
 
@@ -49,7 +49,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getUserByEmail(String email) {
         String sql = """
-            SELECT * FROM user
+            SELECT * FROM `user`
             WHERE email = :email
             """;
 
@@ -69,7 +69,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Integer createUser(UserRegisterRequest userRegisterRequest) {
         String sql = """
-            INSERT INTO user (email, password, created_date, last_modified_date)  -- 這裡的 email, password, created_date, last_modified_date 是對應到我們的 User Table 的欄位
+            INSERT INTO `user` (email, password, created_date, last_modified_date)  -- 這裡的 email, password, created_date, last_modified_date 是對應到我們的 User Table 的欄位
             VALUES (:email, :password, :createdDate, :lastModifiedDate)   -- 這裡的 :email, :password, :createdDate, :lastModifiedDate 是對應到我們的 Map 的 key
             """;
 
