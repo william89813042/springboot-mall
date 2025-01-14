@@ -7,6 +7,8 @@ public interface UserDao {
 
     User getUserById(Integer userid);
 
+    User getUserByEmail(String email);
+
     Integer createUser(UserRegisterRequest userRegisterRequest);
 
 }
