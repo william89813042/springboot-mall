@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+ Dao 層的實作裡面只能夠去和資料庫做溝通，那是不能添加這些 if-else 的判斷邏輯在裡面
+ */
 @Component
 public class UserDaoImpl implements UserDao {
 

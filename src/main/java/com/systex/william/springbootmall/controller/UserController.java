@@ -1,5 +1,6 @@
 package com.systex.william.springbootmall.controller;
 
+import com.systex.william.springbootmall.dto.UserLoginRequest;
 import com.systex.william.springbootmall.dto.UserRegisterRequest;
 import com.systex.william.springbootmall.model.User;
 import com.systex.william.springbootmall.service.UserService;
@@ -26,5 +27,13 @@ public class UserController {
         User user = userService.getUserById(userId); //我們可以去根據傳進去的 userId 的參數去資料庫中查詢這一筆 user 的 數據出來
 
         return ResponseEntity.status(HttpStatus.CREATED).body(user); // 回傳一個 ResponseEntity 物件，這個物件的狀態碼是 HttpStatus.CREATED，而且裡面的 body 是 user 物件
+    }
+
+    @PostMapping("/users/login")
+    public ResponseEntity<User> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
+        User user = userService.login(userLoginRequest);
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+
     }
 }
