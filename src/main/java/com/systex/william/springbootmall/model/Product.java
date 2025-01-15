@@ -48,9 +48,7 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Integer getPrice() {
-        return price;
-    }
+    public Integer getPrice() {return price;}
 
     public void setPrice(Integer price) {
         this.price = price;
