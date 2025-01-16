@@ -2,6 +2,7 @@ package com.systex.william.springbootmall.dao.impl;
 
 import com.systex.william.springbootmall.dao.OrderDao;
 
+import com.systex.william.springbootmall.dto.OrderQueryParams;
 import com.systex.william.springbootmall.model.Order;
 import com.systex.william.springbootmall.model.OrderItem;
 import com.systex.william.springbootmall.rowmapper.OrderItemRowMapper;
@@ -24,6 +25,52 @@ public class OrderDaoImpl implements OrderDao {
 
     public OrderDaoImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
+
+
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+        String sql = """
+                SELECT count(*)
+                FROM `order`
+                WHERE 1=1
+                """;
+        Map<String, Object> map = new HashMap<>(); // <key, value >
+
+        // 查詢條件
+        sql = addFilteringSql(sql, map, orderQueryParams);
+
+        // 在最後一個參數這裡就要去填上 Integer.class那表示說我們要將 count 的值去轉換成是一個 Integer 類型的返回值
+        Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+
+        return total;
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+        String sql = """
+                SELECT *
+                FROM `order`
+                WHERE 1=1
+                """;
+
+        Map<String, Object> map = new HashMap<>(); // <key, value >
+
+        // 查詢條件
+        sql = addFilteringSql(sql, map, orderQueryParams);
+
+        // 排序 新的訂單擺前，舊的訂單擺後
+        // 後端寫死原因，為了不要讓前端去改變訂單的排序紀錄
+        sql += " ORDER BY  created_date DESC ";
+
+        // 分頁
+        sql += " LIMIT :limit OFFSET :offset";
+        map.put("limit", orderQueryParams.getLimit());
+        map.put("offset", orderQueryParams.getOffset());
+
+        List<Order> orderList = namedParameterJdbcTemplate.query(sql, map, new OrderRowMapper()); // List<Order>
+
+        return orderList;
     }
 
     @Override
@@ -126,6 +173,14 @@ public class OrderDaoImpl implements OrderDao {
             parameterSources[i].addValue("amount", orderItem.getAmount());
         }
         namedParameterJdbcTemplate.batchUpdate(sql, parameterSources);
+    }
+
+    private String addFilteringSql(String sql, Map<String, Object> map, OrderQueryParams orderQueryParams) {
+        if (orderQueryParams.getUserId() != null) {
+            sql += " AND user_id = :userId";
+            map.put("userId", orderQueryParams.getUserId());
+        }
+        return sql;
     }
 
 }

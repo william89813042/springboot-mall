@@ -6,6 +6,7 @@ import com.systex.william.springbootmall.dao.ProductDao;
 import com.systex.william.springbootmall.dao.UserDao;
 import com.systex.william.springbootmall.dto.BuyItem;
 import com.systex.william.springbootmall.dto.CreateOrderRequest;
+import com.systex.william.springbootmall.dto.OrderQueryParams;
 import com.systex.william.springbootmall.model.Order;
 import com.systex.william.springbootmall.model.OrderItem;
 import com.systex.william.springbootmall.model.Product;
@@ -38,6 +39,21 @@ public class OrderServiceImpl implements OrderService {
         this.userDao = userDao;
     }
 
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+        return orderDao.countOrder(orderQueryParams);
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+        List<Order> orderList = orderDao.getOrders(orderQueryParams);
+
+        for (Order order : orderList) {
+            List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(order.getOrderId());
+            order.setOrderItemList(orderItemList);
+        }
+        return orderList;
+    }
 
     @Override
     public Order getOrderById(Integer orderId) {
