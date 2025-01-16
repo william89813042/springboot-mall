@@ -5,6 +5,7 @@ import com.systex.william.springbootmall.dao.OrderDao;
 import com.systex.william.springbootmall.dao.ProductDao;
 import com.systex.william.springbootmall.dto.BuyItem;
 import com.systex.william.springbootmall.dto.CreateOrderRequest;
+import com.systex.william.springbootmall.model.Order;
 import com.systex.william.springbootmall.model.OrderItem;
 import com.systex.william.springbootmall.model.Product;
 import com.systex.william.springbootmall.service.OrderService;
@@ -25,6 +26,18 @@ public class OrderServiceImpl implements OrderService {
                             ProductDao productDao) {
         this.orderDao = orderDao;
         this.productDao = productDao;
+    }
+
+
+    @Override
+    public Order getOrderById(Integer orderId) {
+        Order order = orderDao.getOrderById(orderId);
+
+        List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(orderId);
+
+        order.setOrderItemList(orderItemList);
+
+        return order;
     }
 
     @Transactional

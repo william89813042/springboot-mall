@@ -2,7 +2,10 @@ package com.systex.william.springbootmall.dao.impl;
 
 import com.systex.william.springbootmall.dao.OrderDao;
 
+import com.systex.william.springbootmall.model.Order;
 import com.systex.william.springbootmall.model.OrderItem;
+import com.systex.william.springbootmall.rowmapper.OrderItemRowMapper;
+import com.systex.william.springbootmall.rowmapper.OrderRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,6 +24,43 @@ public class OrderDaoImpl implements OrderDao {
 
     public OrderDaoImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
+
+    @Override
+    public Order getOrderById(Integer orderId) {
+        String sql = """
+                SELECT *
+                FROM `order`
+                WHERE order_id = :orderId
+                """;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("orderId", orderId);
+
+        List<Order> orderList = namedParameterJdbcTemplate.query(sql, map, new OrderRowMapper()); // List<Order>
+
+        if (orderList.size() > 0 ) {
+            return orderList.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<OrderItem> getOrderItemsByOrderId(Integer orderId) {
+        String sql = """
+                SELECT *
+                FROM order_item
+                LEFT JOIN product as p ON order_item.product_id = p.product_id
+                WHERE order_item.order_id = :orderId
+                """;
+
+                Map<String, Object> map = new HashMap<>(); // <key, value >
+                map.put("orderId", orderId);
+
+                List<OrderItem> orderItemList = namedParameterJdbcTemplate.query(sql, map, new OrderItemRowMapper()); // List<OrderItem >
+
+                return orderItemList;
     }
 
 

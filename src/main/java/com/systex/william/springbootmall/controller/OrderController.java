@@ -1,6 +1,7 @@
 package com.systex.william.springbootmall.controller;
 
 import com.systex.william.springbootmall.dto.CreateOrderRequest;
+import com.systex.william.springbootmall.model.Order;
 import com.systex.william.springbootmall.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,9 @@ public class OrderController {
 
         Integer orderId = orderService.createOrder(userId, createOrderRequest);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderId);
+        Order order = orderService.getOrderById(orderId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
 }
