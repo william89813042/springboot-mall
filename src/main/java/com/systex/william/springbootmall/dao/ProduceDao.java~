@@ -1,0 +1,4 @@
+package com.systex.william.springbootmall.dao;
+
+public interface ProduceDao {
+}

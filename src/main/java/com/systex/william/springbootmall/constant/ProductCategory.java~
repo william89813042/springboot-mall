@@ -1,0 +1,5 @@
+package com.systex.william.springbootmall.constant;
+
+public enum ProductCategory {
+    
+}
